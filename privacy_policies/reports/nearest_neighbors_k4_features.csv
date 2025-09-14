@@ -1,0 +1,8 @@
+name,cluster_label,nearest_same_type,dist_same_type,nearest_overall,dist_overall
+meta,0,,,tiktok,5.5123
+apple,1,tiktok,1.5984,tiktok,1.5984
+tiktok,1,apple,1.5984,apple,1.5984
+x,1,apple,1.9064,apple,1.9064
+palantir,2,,,amazon,4.0622
+amazon,3,google,2.092,apple,2.0433
+google,3,amazon,2.092,apple,1.843
