@@ -1,4 +1,3 @@
-# Utility functions for privacy policy analysis
 import re, time, math, json, string, statistics as stats
 from typing import List, Dict, Any, Tuple, Optional
 from urllib.parse import quote_plus
@@ -25,20 +24,17 @@ def domain_from_url(url: str) -> str:
     return ".".join(p for p in [parts.domain, parts.suffix] if p)
 
 def clean_text(s: str) -> str:
-    # Normalize whitespace & remove zero-width / non-printables
     s = s.replace("\u200b", "").replace("\ufeff", "")
     s = WS_RE.sub(" ", s).strip()
     return s
 
 def html_to_text(html: str) -> str:
-    # Favor readability-lxml to get main content; fallback to BeautifulSoup
     try:
         doc = Document(html)
         content_html = doc.summary(html_partial=True)
         soup = BeautifulSoup(content_html, "lxml")
     except Exception:
         soup = BeautifulSoup(html, "lxml")
-    # Remove scripts/styles/nav/footer
     for tag in soup(["script","style","noscript","header","footer","nav","form"]):
         tag.decompose()
     text = soup.get_text(separator=" ")
@@ -86,7 +82,6 @@ def basic_counts(text: str) -> Dict[str,int]:
     return {"n_chars": chars, "n_words": words, "n_sents": sents}
 
 def lexical_stats(text: str) -> Dict[str,float]:
-    # simple tokenization on words
     tokens = [t.lower() for t in re.findall(r"[A-Za-z']+", text)]
     if not tokens:
         return {"ttr":0.0, "yule_k":0.0, "entropy":0.0, "avg_zipf":0.0, "rare_frac":0.0, "legalese_frac":0.0}
@@ -109,7 +104,6 @@ def lexical_stats(text: str) -> Dict[str,float]:
     return {"ttr":ttr, "yule_k":yule_k, "entropy":entropy, "avg_zipf":avg_zipf, "rare_frac":rare_frac, "legalese_frac":legalese}
 
 def readability_metrics(text: str) -> Dict[str,float]:
-    # Wrap in try/except since some metrics can error for edge cases
     def safe(fn, default=np.nan):
         try:
             return float(fn(text))
@@ -147,7 +141,6 @@ def load_local_texts(folder: str) -> Dict[str,str]:
         if fn.lower().endswith((".txt",".md",".html")):
             path = os.path.join(folder, fn)
             raw = load_file(path)
-            # if looks like HTML, convert to text
             if "<html" in raw.lower() or "</p>" in raw.lower():
                 raw = html_to_text(raw)
             name = os.path.splitext(fn)[0]
