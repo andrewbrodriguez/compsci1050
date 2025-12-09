@@ -162,7 +162,7 @@ sns.scatterplot(
     y='Ping Count', 
     hue='Device_Category',  # Use the new label column
     palette={'Apple': 'blue', 'Non-Apple': 'red'}, # FORCE Red and Blue
-    style='Session',
+    style=1,
     s=120, 
     alpha=0.7
 )
