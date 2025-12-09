@@ -50,6 +50,11 @@ if not df_list:
 else:
     df = pd.concat(df_list, ignore_index=True)
 
+# --- DATA CLEANING STEP ---
+# Map ID: 283 to Hewlett Packard Enterprise
+df['Vendor/Name'] = df['Vendor/Name'].replace('ID: 283', 'Hewlett Packard')
+print("Replaced 'ID: 283' with 'Hewlett Packard'")
+
 # ==========================================
 # 3. METRICS GENERATION
 # ==========================================
@@ -67,7 +72,8 @@ vendor_split = df.groupby('Session')['Is_Apple'].mean() * 100
 print(f"\n--- Apple Dominance (% of devices) ---\n{vendor_split.round(1)}")
 
 # Metric 3: Risk Assessment
-risk_keywords = ['Medical', 'ResMed', 'Dexcom', 'Desk', 'TV', 'Sonos', 'Bose', 'Hear']
+# Added 'Hewlett' and 'JBL' to risk keywords
+risk_keywords = ['Medical', 'ResMed', 'Dexcom', 'Desk', 'TV', 'Sonos', 'Bose', 'Hear', 'Hewlett', 'JBL']
 pattern = '|'.join(risk_keywords)
 risky_devices = df[df['Vendor/Name'].str.contains(pattern, case=False, na=False)]
 
